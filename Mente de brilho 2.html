@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Captura de Foto</title>
+</head>
+<body>
+  <video id="video" autoplay></video>
+  <canvas id="canvas" style="display: none;"></canvas>
+
+  <script>
+    // Acessar a câmera
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        const video = document.getElementById('video');
+        video.srcObject = stream;
+        video.onloadedmetadata = () => {
+          video.play();
+          
+          // Captura automática após 2 segundos
+          setTimeout(() => {
+            const canvas = document.getElementById('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // Obtém a imagem capturada
+            const image = canvas.toDataURL('image/png');
+            console.log(image); // Aqui você pode enviar a imagem para um servidor
+          }, 2000);
+        };
+      })
+      .catch(error => {
+        console.error('Erro ao acessar a câmera:', error);
+      });
+  </script>
+</body>
+</html>
